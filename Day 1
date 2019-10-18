@@ -1,0 +1,43 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+public class FrequenciesQuestion {
+
+	private String fileLocation = "*************************";    // file loaction
+	private int frequency = 0;
+	List<Integer> frequencyList=new ArrayList<Integer>();
+	private int firstFrequency = 9999;                            // default value to track the change
+	private char opertaionSign;
+	
+	public int FrequencyCalculator() {
+		
+ /*Repeat the operation till you get a repeated frequency*/
+	
+    while (firstFrequency == 9999) {
+		try(Stream<String> stream = Files.lines(Paths.get(fileLocation))){
+    
+/*Each line get the operator and perform calculation accordingly and check if frequency already exist*/            
+			stream.forEach(line -> {
+				opertaionSign = line.trim().charAt(0);	
+				frequency = (opertaionSign=='+')? frequency + Integer.parseInt(line.trim().substring(1)) : frequency - Integer.parseInt(line.trim().substring(1));
+				if(frequencyList.contains(frequency) && firstFrequency == 9999) {
+					firstFrequency =  frequency;
+				}
+				frequencyList.add(frequency);
+			});
+		}catch(IOException e) {
+			System.out.println(e);
+			}
+		}
+		return firstFrequency;
+	}
+
+	public static void main(String[] args) {
+		FrequenciesQuestion frquencyQuestions = new FrequenciesQuestion();
+		System.out.println(frquencyQuestions.FrequencyCalculator());
+	}
+}
