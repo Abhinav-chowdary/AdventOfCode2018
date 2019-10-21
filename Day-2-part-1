@@ -1,0 +1,62 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class BoxNames {
+	
+	List<Character> characterList = new ArrayList<Character>();
+	List<Map<Character,Long>> characterCountList = new ArrayList<Map<Character,Long>>();
+	List<Long> checkSumMap =  new ArrayList<Long>();
+	Set<Long> uniqueValues	=  new HashSet<Long>();
+	Map<Long, Long> finalCounts  = new HashMap<Long,Long>();
+	Long previousCount =1L;
+
+	public Long FindCheckSum() {
+		
+		String fileLocation = "*********************";
+	
+		try {
+			Stream<String> stream =  Files.lines(Paths.get(fileLocation));
+			stream.forEach(line ->{
+				characterList = line.trim().chars().mapToObj(c -> (char) c).collect(Collectors.toList());
+				characterCountList.add(characterList.stream()
+						.collect(Collectors.groupingBy(Function.identity(),Collectors.counting())));
+			});
+		
+						
+			characterCountList.stream().forEach(mapList -> {
+				
+				mapList.entrySet().stream().forEach(entry -> {uniqueValues.add(entry.getValue());});
+				checkSumMap.addAll(uniqueValues.stream().collect(Collectors.toList()));
+				uniqueValues.clear();
+			});
+			
+			finalCounts = checkSumMap.stream().collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
+			
+			finalCounts.entrySet().stream().forEach(entry -> {
+				System.out.println(entry.getKey() + "   = "+entry.getValue());
+				previousCount = (entry.getKey() == 1) ? previousCount : (previousCount*entry.getValue());
+			});
+			
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		return previousCount;
+	}
+	
+	public static void main(String[] args) {
+		
+		BoxNames boxNames = new BoxNames();
+		System.out.println(boxNames.FindCheckSum());
+	
+	}
+
+}
