@@ -1,0 +1,43 @@
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+public class BoxNamesPart2 {
+	
+	String fileLocation = "C://Users/ackamma/eclipse-workspace-git/Trails/src/BoxNames";
+	List<String> linesList =  new ArrayList<String>();
+	String ProtoTypeBox;
+	
+	public void FindSimilarBoxes(){
+
+		try {
+			Stream<String> stream = Files.lines(Paths.get(fileLocation));
+			stream.forEach(line -> {linesList.add(line);});
+			Collections.sort(linesList);
+			
+			for(int i = 0;i<linesList.size()-1;i++) {
+				int k = i;
+				int diffCount = (int) IntStream.range(0, linesList.get(i).length())
+						.filter(j -> linesList.get(k).charAt(j) != linesList.get(k+1).charAt(j))
+						.count();	
+				if(diffCount == 1) {
+					ProtoTypeBox = linesList.get(i);
+					System.out.println(ProtoTypeBox);
+					System.out.println(linesList.get(i+1));
+					break;
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+	
+	public static void main(String[] args){
+		BoxNamesPart2 boxnames = new BoxNamesPart2();
+		boxnames.FindSimilarBoxes();
+	}
+}
