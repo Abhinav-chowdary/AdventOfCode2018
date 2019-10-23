@@ -1,0 +1,48 @@
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+
+public class Day3Part1 {
+
+	String[][] fullClothSize = new String[2000][2000];
+	String fileLocation = "**********************************************";
+	Long overLapInchCounter =  0L;
+	int personId, startingInchFromLeft,startingInchFromTop,length,breadth; 
+		
+	public Long ClothSizes() {
+		try {
+			Stream<String> stream = Files.lines(Paths.get(fileLocation));
+			stream.forEach(line ->{
+				String[] eachCut = new String[5];
+				eachCut = line.split("[#,@:x]");
+				
+				personId 				      = Integer.parseInt(eachCut[1].trim());
+				startingInchFromLeft 	= Integer.parseInt(eachCut[2].trim());
+				startingInchFromTop		= Integer.parseInt(eachCut[3].trim());
+				length					      = Integer.parseInt(eachCut[4].trim());
+				breadth					      = Integer.parseInt(eachCut[5].trim());
+				
+				for(int i = 1; i <= length;i++ ) {
+					for(int j = 1; j <=  breadth;j++ ) {
+						
+						if(fullClothSize[startingInchFromLeft+i][startingInchFromTop+j] == null) {
+							fullClothSize[startingInchFromLeft+i][startingInchFromTop+j] = eachCut[1].trim();
+						
+						}else if(!"X".equalsIgnoreCase(fullClothSize[startingInchFromLeft+i][startingInchFromTop+j])){
+							fullClothSize[startingInchFromLeft+i][startingInchFromTop+j] = "X";
+							++overLapInchCounter;	
+						}
+					}
+				}
+			});	
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		return overLapInchCounter;	
+	}
+  
+	public static void main(String[] args) {
+		Day3Part1 day3 = new Day3Part1();
+		System.out.println(day3.ClothSizes());
+	}
+}
